@@ -11,6 +11,7 @@
     "lint": "tsc --noEmit",
     "predeploy:clean": "rm -rf dist/*",
     "predeploy": "vite build --base=/quick-photo-editor/",
+    "predeploy:domain": "echo ambkw.github.io > dist/CNAME",
     "deploy": "npm run predeploy:domain && gh-pages -d dist"
   },
   "dependencies": {
