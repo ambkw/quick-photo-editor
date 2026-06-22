@@ -147,7 +147,7 @@ export default function Toolbar({
   };
 
   return (
-    <div id="toolbar-container" className="w-80 border-l border-slate-800 bg-slate-900/40 p-4 flex flex-col h-full overflow-hidden select-none">
+    <div id="toolbar-container" className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-slate-800 bg-slate-900/40 p-4 flex flex-col h-full overflow-hidden select-none">
       
       {/* Category Tabs */}
       <div className="space-y-1">

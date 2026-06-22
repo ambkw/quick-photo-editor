@@ -48,7 +48,7 @@ export default function Sidebar({
   const selectedImage = images.find(img => img.id === selectedImageId);
 
   return (
-    <aside id="sidebar-container" className="w-80 border-r border-slate-800 bg-slate-900/40 flex flex-col h-full overflow-hidden select-none">
+    <aside id="sidebar-container" className="w-full lg:w-80 border-r-0 lg:border-r border-slate-800 bg-slate-900/40 flex flex-col h-full overflow-hidden select-none">
       {/* Upload Header */}
       <div className="p-4 border-b border-slate-800 flex flex-col gap-2">
         <h2 className="font-sans font-semibold tracking-tight text-slate-200 text-sm flex items-center gap-2">

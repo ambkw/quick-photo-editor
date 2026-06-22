@@ -462,42 +462,15 @@ export default function CanvasWorkspace({
   };
 
   return (
-    <div id="main-canvas-workspace" className="flex-1 bg-slate-950 flex flex-col items-center justify-center p-6 overflow-hidden relative" ref={containerRef}>
+    <div id="main-canvas-workspace" className="flex-1 bg-slate-950 flex flex-col items-center justify-center p-3 md:p-6 overflow-hidden relative" ref={containerRef}>
       
       {/* File dimensions overlay indicator */}
-      <div id="canvas-status-ribbon" className="absolute top-4 left-4 z-10 flex items-center gap-2.5 bg-slate-900/95 border border-slate-800 rounded-lg px-2.5 py-1.5 shadow-md select-none">
+      <div id="canvas-status-ribbon" className="hidden md:flex absolute top-4 left-4 z-10 items-center gap-2.5 bg-slate-900/95 border border-slate-800 rounded-lg px-2.5 py-1.5 shadow-md select-none">
         <div className="w-2 h-2 rounded-full bg-emerald-400" />
         <span className="text-[10px] text-slate-400 font-mono tracking-tight font-medium">
           Source : {imageItem.name} — <span className="text-slate-200 font-bold">{imageItem.width} × {imageItem.height} px</span>
         </span>
       </div>
-
-      {/* Editing State Header Alert */}
-      {editMode !== 'none' && (
-        <div id="edit-mode-helper-overlay" className="absolute top-4 right-4 z-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-1.5 flex items-center gap-2 animate-fadeIn">
-          {editMode === 'blur_brush' && (
-            <span className="text-[10px] text-rose-300 font-bold flex items-center gap-1">
-              🎨 Mode Pinceau Actif — Dessiner sur l'image pour flouter
-            </span>
-          )}
-          {editMode === 'crop' && (
-            <span className="text-[10px] text-emerald-300 font-bold flex items-center gap-1">
-              <CropIcon className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
-              Mode Recadrage (Drag boutons pour délimiter)
-            </span>
-          )}
-          {editMode === 'text_overlay' && (
-            <span className="text-[10px] text-teal-300 font-bold">
-              ✏️ Déplacez, tournez ou supprimez vos titres/émojis
-            </span>
-          )}
-          {editMode === 'adjust' && (
-            <span className="text-[10px] text-slate-300 font-bold">
-              🎛️ Curseurs d'ajustements actifs
-            </span>
-          )}
-        </div>
-      )}
 
       {/* Interactive Stage block */}
       <div 

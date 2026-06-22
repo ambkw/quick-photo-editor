@@ -54,6 +54,12 @@ export default function App() {
   // Visual dragover file loading states
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
+  // Responsive mobile active screen selection
+  const [mobileTab, setMobileTab] = useState<'gallery' | 'edit'>('gallery');
+
+  // Collapsible optimization settings
+  const [isOptimizeExpanded, setIsOptimizeExpanded] = useState(false);
+
   // Selected image computed shortcut
   const selectedImage = images.find(img => img.id === selectedImageId) || null;
 
@@ -134,6 +140,7 @@ export default function App() {
         return updated;
       });
       setEditMode('none');
+      setMobileTab('edit'); // Transition instantly to the editor on mobile when photos are loaded
     }
   };
 
@@ -141,6 +148,7 @@ export default function App() {
   const handleSelectImage = (id: string) => {
     setSelectedImageId(id);
     setEditMode('none');
+    setMobileTab('edit'); // Switch mobile view to active editor automatically
   };
 
   const handleDeleteImage = (id: string) => {
@@ -152,6 +160,9 @@ export default function App() {
       if (selectedImageId === id) {
         setSelectedImageId(filtered.length > 0 ? filtered[0].id : null);
         setEditMode('none');
+      }
+      if (filtered.length === 0) {
+        setMobileTab('gallery'); // Return to gallery overview if library becomes empty
       }
       return filtered;
     });
@@ -386,89 +397,159 @@ export default function App() {
       </header>
 
       {/* Main Multi-Columns workspace layout */}
-      <main id="main-structure-columns" className="flex-1 flex overflow-hidden z-10">
+      <main id="main-structure-columns" className="flex-1 flex flex-col lg:flex-row overflow-hidden z-10 relative">
         
         {/* Left column : Gallery + Image manager */}
-        <Sidebar
-          images={images}
-          selectedImageId={selectedImageId}
-          onSelectImage={handleSelectImage}
-          onAddImages={addFilesToGallery}
-          onDeleteImage={handleDeleteImage}
-          onDownloadSingle={handleDownloadSingle}
-          onDownloadAllZip={handleDownloadAllZip}
-          isDownloading={isDownloading}
-        />
-
-        {/* Center column : Canvas Workspace board */}
-        <div className="flex-1 flex flex-col justify-between overflow-hidden relative bg-slate-900/10">
-          
-          {/* Active Workboard panel */}
-          <CanvasWorkspace
-            imageItem={selectedImage}
-            editMode={editMode}
-            onUpdateImage={handleUpdateImage}
-            activeCropRatio={activeCropRatio}
-            temporaryCrop={temporaryCrop}
-            setTemporaryCrop={setTemporaryCrop}
-            brushSize={brushSize}
-            brushStrength={brushStrength}
-            selectedOverlayId={selectedOverlayId}
-            setSelectedOverlayId={setSelectedOverlayId}
+        <div id="col-sidebar" className={`${mobileTab === 'gallery' ? 'flex' : 'hidden'} lg:flex h-full flex-none w-full lg:w-80`}>
+          <Sidebar
+            images={images}
+            selectedImageId={selectedImageId}
+            onSelectImage={handleSelectImage}
+            onAddImages={addFilesToGallery}
+            onDeleteImage={handleDeleteImage}
+            onDownloadSingle={handleDownloadSingle}
+            onDownloadAllZip={handleDownloadAllZip}
+            isDownloading={isDownloading}
           />
-
-          {/* Quick inline Optimizations configuration bar when an image is loaded */}
-          {images.length > 0 && (
-            <div id="footer-optimization" className="p-4 border-t border-slate-900 bg-slate-950/40 backdrop-blur-sm flex-none">
-              <div className="max-w-2xl mx-auto">
-                <OptimizeSettings
-                  settings={optimizeSettings}
-                  onChange={setOptimizeSettings}
-                />
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Right column : Active context action controller (Hidden if no selected image) */}
-        {selectedImage ? (
-          <Toolbar
-            editMode={editMode}
-            setEditMode={setEditMode}
-            adjustments={selectedImage.adjustments}
-            onAdjustmentsChange={(adjustments: ImageAdjustments) => {
-              handleUpdateImage({
-                ...selectedImage,
-                adjustments
-              });
-            }}
-            activeCropRatio={activeCropRatio}
-            onCropRatioChange={handleCropRatioChange}
-            onApplyCrop={handleApplyCrop}
-            onResetCrop={handleResetCrop}
-            onCenterCrop={handleCenterCrop}
-            brushSize={brushSize}
-            setBrushSize={setBrushSize}
-            brushStrength={brushStrength}
-            setBrushStrength={setBrushStrength}
-            onUndoStroke={handleUndoStroke}
-            onClearStrokes={handleClearStrokes}
-            strokeCount={selectedImage.blurStrokes.length}
-            onAddOverlay={handleAddOverlay}
-            selectedOverlayId={selectedOverlayId}
-            setSelectedOverlayId={setSelectedOverlayId}
-            overlays={selectedImage.overlays}
-            onUpdateOverlays={(overlays) => handleUpdateImage({ ...selectedImage, overlays })}
-          />
-        ) : (
-          <div className="w-80 border-l border-slate-900 bg-slate-900/20 p-6 flex flex-col items-center justify-center text-center select-none">
-            <Sliders className="w-7 h-7 text-slate-800 mb-2.5" />
-            <p className="text-slate-500 text-xs font-semibold leading-relaxed">Pas de photo active</p>
-            <p className="text-slate-650 text-[10.5px] mt-1">Sélectionnez ou ajoutez une image à gauche pour déverrouiller la boîte d'outils de retouches.</p>
+        {/* Editor columns group container */}
+        <div id="col-editor-group" className={`${mobileTab === 'edit' ? 'flex' : 'hidden'} lg:flex flex-1 flex-col lg:flex-row overflow-hidden min-h-0`}>
+          
+          {/* Canvas Workspace board */}
+          <div className="h-[44vh] lg:h-auto lg:flex-1 flex flex-col justify-between overflow-hidden relative bg-slate-900/10 min-h-0">
+            <CanvasWorkspace
+              imageItem={selectedImage}
+              editMode={editMode}
+              onUpdateImage={handleUpdateImage}
+              activeCropRatio={activeCropRatio}
+              temporaryCrop={temporaryCrop}
+              setTemporaryCrop={setTemporaryCrop}
+              brushSize={brushSize}
+              brushStrength={brushStrength}
+              selectedOverlayId={selectedOverlayId}
+              setSelectedOverlayId={setSelectedOverlayId}
+            />
+
+            {/* Quick inline Optimizations configuration bar when an image is loaded */}
+            {images.length > 0 && (
+              <div id="footer-optimization" className="p-2 border-t border-slate-900 bg-slate-950/40 backdrop-blur-sm shadow-md flex-none z-10">
+                <div className="max-w-2xl mx-auto space-y-2">
+                  <button 
+                    id="btn-toggle-optimize-accordion"
+                    onClick={() => setIsOptimizeExpanded(!isOptimizeExpanded)}
+                    className="w-full flex items-center justify-between text-left px-2 sm:px-3 py-1 hover:bg-slate-900/40 rounded-lg transition-colors cursor-pointer text-xs focus:outline-none"
+                  >
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <Sliders className="w-3.5 h-3.5 text-emerald-400 flex-none" />
+                      <span className="font-semibold text-slate-350 text-[11px] sm:text-xs truncate">Format d'export & Poids</span>
+                      <span className="text-[10px] text-slate-500 font-mono font-medium truncate hidden sm:inline">
+                        ({optimizeSettings.enabled ? `${optimizeSettings.format.toUpperCase()} — Qualité ${Math.round(optimizeSettings.quality * 100)}%` : "Désactivé"})
+                      </span>
+                    </div>
+                    <span className="text-[10px] sm:text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1">
+                      {isOptimizeExpanded ? '▲ Réduire' : '▼ Configurer'}
+                    </span>
+                  </button>
+
+                  {isOptimizeExpanded && (
+                    <div className="pt-2 border-t border-slate-900/60 animate-fadeIn">
+                      <OptimizeSettings
+                        settings={optimizeSettings}
+                        onChange={setOptimizeSettings}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Right column controls */}
+          <div className="h-[42vh] lg:h-auto lg:w-80 flex flex-col border-t lg:border-t-0 lg:border-l border-slate-900 bg-slate-950/20 flex-none lg:flex divide-y divide-slate-900 overflow-hidden">
+            {selectedImage ? (
+              <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+                <Toolbar
+                  editMode={editMode}
+                  setEditMode={setEditMode}
+                  adjustments={selectedImage.adjustments}
+                  onAdjustmentsChange={(adjustments: ImageAdjustments) => {
+                    handleUpdateImage({
+                      ...selectedImage,
+                      adjustments
+                    });
+                  }}
+                  activeCropRatio={activeCropRatio}
+                  onCropRatioChange={handleCropRatioChange}
+                  onApplyCrop={handleApplyCrop}
+                  onResetCrop={handleResetCrop}
+                  onCenterCrop={handleCenterCrop}
+                  brushSize={brushSize}
+                  setBrushSize={setBrushSize}
+                  brushStrength={brushStrength}
+                  setBrushStrength={setBrushStrength}
+                  onUndoStroke={handleUndoStroke}
+                  onClearStrokes={handleClearStrokes}
+                  strokeCount={selectedImage.blurStrokes.length}
+                  onAddOverlay={handleAddOverlay}
+                  selectedOverlayId={selectedOverlayId}
+                  setSelectedOverlayId={setSelectedOverlayId}
+                  overlays={selectedImage.overlays}
+                  onUpdateOverlays={(overlays) => handleUpdateImage({ ...selectedImage, overlays })}
+                />
+              </div>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 select-none bg-slate-950/20">
+                <Sliders className="w-7 h-7 text-slate-800 mb-2.5" />
+                <p className="text-slate-500 text-xs font-semibold leading-relaxed">Pas de photo active</p>
+                <p className="text-slate-650 text-[10.5px] mt-1 pr-1 pl-1">Sélectionnez une image de votre galerie pour afficher la boîte d'outils de retouches.</p>
+              </div>
+            )}
+          </div>
+
+        </div>
 
       </main>
+
+      {/* Mobile Bottom Navigation Bars */}
+      <div id="mobile-navigation" className="lg:hidden h-14 bg-slate-950 border-t border-slate-900 flex items-center justify-around flex-none z-20 px-4 select-none">
+        
+        {/* Gallery selection link */}
+        <button
+          id="btn-nav-gallery"
+          onClick={() => setMobileTab('gallery')}
+          className={`flex flex-col items-center gap-1.5 py-1 px-5 rounded-xl transition-all duration-200 cursor-pointer ${
+            mobileTab === 'gallery'
+              ? 'text-emerald-400 font-bold bg-slate-900/50'
+              : 'text-slate-500 hover:text-slate-300'
+          }`}
+        >
+          <div className="relative">
+            <ImageIcon className="w-4.5 h-4.5" />
+            {images.length > 0 && (
+              <span className="absolute -top-1.5 -right-2.5 bg-emerald-500 text-slate-950 font-mono text-[9px] font-black w-3.5 h-3.5 rounded-full flex items-center justify-center">
+                {images.length}
+              </span>
+            )}
+          </div>
+          <span className="text-[10px] tracking-wide">Galerie</span>
+        </button>
+
+        {/* Retouche and tools links */}
+        <button
+          id="btn-nav-edit"
+          onClick={() => setMobileTab('edit')}
+          className={`flex flex-col items-center gap-1.5 py-1 px-5 rounded-xl transition-all duration-200 cursor-pointer ${
+            mobileTab === 'edit'
+              ? 'text-emerald-400 font-bold bg-slate-900/50'
+              : 'text-slate-500 hover:text-slate-300'
+          }`}
+        >
+          <Sliders className="w-4.5 h-4.5" />
+          <span className="text-[10px] tracking-wide">Retouches</span>
+        </button>
+
+      </div>
 
     </div>
   );
