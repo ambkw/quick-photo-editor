@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { ImageItem } from '../types';
 import { formatBytes } from '../utils/imageHelpers';
 import { 
@@ -6,7 +6,13 @@ import {
   Trash2, 
   Download, 
   Layers, 
-  FileImage
+  FileImage,
+  Github,
+  Info,
+  ShieldCheck,
+  Server,
+  X,
+  ExternalLink
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -31,6 +37,7 @@ export default function Sidebar({
   isDownloading
 }: SidebarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -175,6 +182,125 @@ export default function Sidebar({
               </>
             )}
           </button>
+        </div>
+      )}
+
+      {/* Code Source & Info Footer */}
+      <div id="sidebar-footer" className="p-3 border-t border-slate-800 bg-slate-950/40 text-center flex-none">
+        <button
+          id="code-source-trigger"
+          onClick={() => setIsInfoOpen(true)}
+          className="text-[11px] text-slate-450 hover:text-emerald-400 font-medium hover:underline transition-all duration-250 cursor-pointer inline-flex items-center gap-1.5 focus:outline-none"
+        >
+          <Github className="w-3.5 h-3.5 text-slate-500 hover:text-emerald-400 transition-colors" />
+          Code source & Infos
+        </button>
+      </div>
+
+      {/* Informative Modal Popup */}
+      {isInfoOpen && (
+        <div 
+          id="info-modal-backdrop"
+          onClick={() => setIsInfoOpen(false)}
+          className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fadeIn"
+        >
+          <div 
+            id="info-modal-card"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-scaleIn flex flex-col max-h-[90vh]"
+          >
+            {/* Modal Header */}
+            <div className="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/30">
+              <div className="flex items-center gap-2">
+                <Github className="w-4 h-4 text-emerald-400" />
+                <h3 className="font-sans font-semibold text-slate-200 text-sm">Code Source & Confidentialité</h3>
+              </div>
+              <button 
+                id="close-info-modal-top"
+                onClick={() => setIsInfoOpen(false)}
+                className="p-1 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-5 space-y-4 overflow-y-auto text-xs text-slate-300 leading-relaxed font-sans scrollbar-thin scrollbar-thumb-slate-800">
+              
+              {/* GitHub Link */}
+              <div className="space-y-1.5 text-left">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1.5">
+                  <Github className="w-3 h-3 text-emerald-400" />
+                  Code Source du Projet
+                </span>
+                <p className="text-[11px] text-slate-400 leading-normal">
+                  Cette application est entièrement open-source. Le code complet est accessible librement sur GitHub :
+                </p>
+                <a 
+                  id="github-code-link"
+                  href="https://github.com/ambkw/quick-photo-editor/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-emerald-300 hover:text-emerald-200 hover:border-emerald-500/40 transition-all font-mono text-[11px]"
+                >
+                  <span className="truncate">ambkw/quick-photo-editor</span>
+                  <ExternalLink className="w-3.5 h-3.5 flex-none text-emerald-400" />
+                </a>
+              </div>
+
+              {/* Data Safety (aucune donnée n'est enregistrée) */}
+              <div className="space-y-1.5 pt-1.5 border-t border-slate-800/50 text-left">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  Respect de la vie privée
+                </span>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  <strong className="text-emerald-400">Aucune donnée n'est enregistrée.</strong> Toutes les manipulations et l'édition de vos photos sont effectuées directement localement dans la mémoire de votre navigateur internet. Aucune image, métadonnée ou information personnelle n'est envoyée vers un serveur externe. Vos photos restent les vôtres, en sécurité.
+                </p>
+              </div>
+
+              {/* Hosting Info & Coordinates */}
+              <div className="space-y-1.5 pt-1.5 border-t border-slate-800/50 text-left">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1.5">
+                  <Server className="w-3.5 h-3.5 text-emerald-400" />
+                  Hébergement et Infrastructure
+                </span>
+                <p className="text-[11px] text-slate-350">
+                  Le site web statique est hébergé de façon globale et sécurisée par le service <strong className="text-slate-200">GitHub Pages</strong>, fourni par la plateforme GitHub.
+                </p>
+                <div className="p-2.5 bg-slate-950/30 border border-slate-800 rounded-xl text-[10.5px] text-slate-500 space-y-1 font-sans leading-relaxed">
+                  <p className="font-semibold text-slate-400">Coordonnées de l'hébergeur :</p>
+                  <p className="text-slate-450 font-medium">GitHub, Inc.</p>
+                  <p className="text-slate-450">88 Colin P. Kelly Jr. Street</p>
+                  <p className="text-slate-450">San Francisco, CA 94107, USA</p>
+                  <p className="text-[10px] pt-0.5">
+                    Site officiel :{' '}
+                    <a 
+                      href="https://github.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="underline text-emerald-500/80 hover:text-emerald-400"
+                    >
+                      https://github.com
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-slate-800 bg-slate-950/40 flex justify-end">
+              <button 
+                id="close-info-modal-btn"
+                onClick={() => setIsInfoOpen(false)}
+                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-sans text-xs font-bold rounded-lg transition-colors cursor-pointer"
+              >
+                D'accord, j'ai compris
+              </button>
+            </div>
+
+          </div>
         </div>
       )}
     </aside>
