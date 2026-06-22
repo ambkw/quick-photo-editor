@@ -1,0 +1,6 @@
+{
+  "name": "Outil de retouche photo",
+  "description": "Un outil complet, rapide et élégant de retouche photo pour optimiser, recadrer, flouter et annoter vos images directement dans votre navigateur.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
