@@ -10,7 +10,6 @@
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "predeploy:clean": "rm -rf dist/*",
-    "predeploy": "vite build",
     "predeploy": "vite build --base=/quick-photo-editor/",
     "deploy": "npm run predeploy:domain && gh-pages -d dist"
   },
