@@ -174,7 +174,7 @@ export default function CanvasWorkspace({
               Outil de retouches d'images en ligne
             </h1>
             <p className="text-slate-400 text-xs mt-2 leading-relaxed">
-              Pour démarrer, chargez une ou plusieurs photos depuis votre ordinateur en utilisant le bouton <strong className="text-emerald-400">Ajouter des photos</strong> dans le panneau latéral, ou en les glissant-déposant directement ici.
+              Pour démarrer, chargez une ou plusieurs photos depuis votre ordinateur en utilisant le bouton <strong className="text-emerald-400">Charger des photos</strong> dans le panneau latéral, ou en les glissant-déposant directement ici.
             </p>
           </div>
           

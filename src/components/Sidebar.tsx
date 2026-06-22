@@ -63,7 +63,7 @@ export default function Sidebar({
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-sans text-xs font-medium py-2.5 px-3 rounded-lg transition-all duration-200 cursor-pointer shadow-md hover:shadow-emerald-500/10 active:scale-95"
           >
             <Plus className="w-3.5 h-3.5" />
-            Ajouter des photos
+            Charger des photos
           </button>
         </div>
 

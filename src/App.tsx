@@ -366,7 +366,7 @@ export default function App() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-sans font-bold text-slate-100 text-sm tracking-tight">Outil de Retouche Photo</h1>
-              <span className="text-[9px] bg-slate-800 text-slate-400 font-mono font-bold px-2 py-0.5 rounded-full border border-slate-700/60 uppercase">Beta studio</span>
+              <span className="text-[9px] bg-slate-800 text-slate-400 font-mono font-bold px-2 py-0.5 rounded-full border border-slate-700/60 uppercase">LOCAL</span>
             </div>
             <p className="text-[10px] text-slate-500 tracking-wide mt-0.5">Recadrez, floutez, ajustez et optimisez plusieurs photos en local.</p>
           </div>
